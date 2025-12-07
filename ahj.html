@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Scene Explorer (PC Optimized)</title>
+    <style>
+        .body {
+            background-color:lightseagreen;
+        }
+        /* Custom styles for Key Indicators: Giving them a 3D button feel */
+        .key-indicator {
+            transition: all 0.1s ease-out;
+            box-shadow: 0 8px 0 #222; /* Darker, larger 3D shadow */
+            transform: translateY(0);
+            cursor: pointer; /* Indicate it's clickable */
+            user-select: none; /* Prevent accidental text selection */
+        }
+        .key-indicator.active {
+            box-shadow: 0 0 #222;
+            transform: translateY(8px); /* Full depth press */
+        }
+    </style>
+    
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen flex items-center justify-center p-8">
+
+    <!-- PC Optimized: Increased max-w-4xl for a wider desktop view -->
+    <div class="w-full max-w-4xl bg-gray-800 p-8 sm:p-10 rounded-3xl shadow-2xl space-y-8">
+        <h1 class="text-4xl font-extrabold text-yellow-300 text-center tracking-wide">
+            Scene Interaction Canvas
+        </h1>
+        <p class="text-center text-gray-400 text-lg">
+            Use **A**, **S**, or **D** keys, or click the buttons below, to navigate the scenes.
+        </p>
+
+        <!-- Scene Display Area: Increased height for more visual space -->
+        <div id="sceneDisplay" class="h-[500px] w-full rounded-2xl flex items-center justify-center transition-all duration-300 bg-gray-700 p-6 overflow-hidden border-4 border-gray-700 shadow-inner">
+            <p class="text-3xl text-gray-400 font-light">
+                Start by pressing 'A', 'S', or 'D'...
+            </p>
+        </div>
+
+        <!-- Key Indicators / Instructions (Large, prominent buttons) -->
+        <div class="flex justify-center space-x-8 pt-4">
+            <div id="key-a" data-key="a" class="key-indicator bg-red-600 text-white font-extrabold p-6 w-24 text-2xl text-center rounded-xl hover:bg-red-700">A</div>
+            <div id="key-s" data-key="s" class="key-indicator bg-blue-600 text-white font-extrabold p-6 w-24 text-2xl text-center rounded-xl hover:bg-blue-700">S</div>
+            <div id="key-d" data-key="d" class="key-indicator bg-green-600 text-white font-extrabold p-6 w-24 text-2xl text-center rounded-xl hover:bg-green-700">D</div>
+        </div>
+        <div class="flex justify-between text-base text-gray-400 mt-2 px-10">
+            <span class="text-red-300">Treasure Wall (A)</span>
+            <span class="text-blue-300">Reset View (S)</span>
+            <span class="text-green-300">Text & Door Wall (D)</span>
+        </div>
+    </div>
+
+    <script>
+        const sceneDisplay = document.getElementById('sceneDisplay');
+        const keyIndicators = {
+            'a': document.getElementById('key-a'),
+            's': document.getElementById('key-s'),
+            'd': document.getElementById('key-d'),
+        };
+
+        // Content Templates using your specified dimensions and colors.
+        const sceneTemplates = {
+            // A Key: Wall (150x300, brown) with Box (50x100, goldenrod)
+            'a': `
+                <div class="flex flex-col items-center justify-center w-full h-full p-4">
+                    <div id="wall-a" class="bg-amber-800 w-[150px] h-[300px] flex flex-col items-center justify-center rounded-lg shadow-2xl space-y-4 border-8 border-amber-900">
+                        <h2 class="text-sm font-semibold text-white/80">Wall 150x300</h2>
+                        <!-- Box element -->
+                        <div id="box" class="bg-amber-400 w-[50px] h-[100px] rounded-md shadow-inner border-4 border-amber-600 flex items-center justify-center transform hover:scale-110 transition duration-300">
+                             <span class="text-3xl text-gray-800">&#x1F4B0;</span> <!-- Treasure Box Emoji -->
+                        </div>
+                    </div>
+                    <p class="text-lg font-semibold text-red-300 mt-4">Scene A: Treasure Wall</p>
+                </div>
+            `,
+            // D Key: Wall (300x300, brown) with Door (50x100, goldenrod) and Text
+            'd': `
+                <div class="flex flex-col items-center justify-center w-full h-full p-4">
+                    <div id="wall-d" class="bg-amber-800 w-[300px] h-[300px] flex flex-col items-center justify-center rounded-lg shadow-2xl relative border-8 border-amber-900">
+                        <!-- Text centered on the wall -->
+                        <div class="absolute inset-0 flex items-center justify-center z-10">
+                            <h2 class="text-4xl font-black text-white p-2 bg-black/50 rounded-lg transform rotate-3 shadow-xl">
+                                YUVRAJ JAIN
+                            </h2>
+                        </div>
+                        <!-- Door element (placed at the bottom) -->
+                        <div id="door" class="bg-amber-400 w-[50px] h-[100px] rounded-t-lg shadow-2xl border-4 border-amber-600 absolute bottom-0 z-0 transform hover:scale-110 transition duration-300"></div>
+                    </div>
+                    <p class="text-lg font-semibold text-green-300 mt-4">Scene D: Text and Door Wall</p>
+                </div>
+            `,
+            // S Key: Reset Scene
+            's': `
+                <div class="bg-gray-700 w-full h-full rounded-lg flex flex-col items-center justify-center p-8 transition-all duration-500">
+                    <h2 class="text-5xl font-extrabold text-blue-300 mb-4 animate-pulse">
+                        Scene Reset
+                    </h2>
+                    <p class="text-xl text-gray-300 text-center">
+                        The 'S' key provides a neutral view. <br> Press 'A' or 'D' (or click) to load a new scene!
+                    </p>
+                </div>
+            `
+        };
+
+        // Function to update the display
+        function updateScene(key) {
+            const content = sceneTemplates[key.toLowerCase()];
+            if (content) {
+                sceneDisplay.innerHTML = content;
+            } else {
+                sceneDisplay.innerHTML = `
+                    <p class="text-2xl text-red-400 font-semibold">
+                        Key "${key.toUpperCase()}" is not mapped. Please press 'A', 'S', or 'D'.
+                    </p>
+                `;
+            }
+        }
+
+        // Function to handle key press visualization
+        function animateKey(keyElement) {
+            keyElement.classList.add('active');
+            setTimeout(() => {
+                keyElement.classList.remove('active');
+            }, 150);
+        }
+
+        // --- Event Listeners ---
+
+        // 1. Keyboard Input (For PC/Keyboard users)
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+            
+            if (key in keyIndicators) {
+                updateScene(key);
+                animateKey(keyIndicators[key]);
+            }
+        });
+
+        // 2. Mouse/Touch Click Input (For mouse users)
+        Object.values(keyIndicators).forEach(button => {
+            button.addEventListener('click', (event) => {
+                const key = event.currentTarget.getAttribute('data-key');
+                if (key) {
+                    updateScene(key);
+                    animateKey(keyIndicators[key]);
+                }
+            });
+        });
+
+        // Initialize with the default 'S' scene on load
+        document.addEventListener('DOMContentLoaded', () => {
+             updateScene('s');
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <style>
+            .image-stack {
+    /* 1. KEY: Makes the container the reference point for absolute positioning */
+    position: relative; 
+    
+    /* Set the size of the overall display area */
+    width: 400px;
+    height: 300px;
+}
+
+.base-image {
+    /* 2. Base image covers the entire container */
+    
+    /* Ensures it stays behind the overlay */
+    position: relative; 
+    display: block;
+}
+
+.overlay-image {
+    /* 3. KEY: Takes it out of the normal flow and allows precise placement */
+    position: absolute;
+    /* padding of the image(overlay)*/ 
+    padding-top: 16cm ;
+    padding-left: 12cm;
+padding-bottom: x;
+
+    /* 4. Positioning: Place the music note in the top-right corner */
+    top: 10px;    /* 10 pixels from the top edge of the container */
+    right: 10px;  /* 10 pixels from the right edge of the container */
+    
+    /* 5. Set the size of the overlay */
+    width: 50px; 
+    height: 100px;
+    
+    /* Optional: Ensure it's clearly on top (higher z-index value means closer to the viewer) */
+    z-index: 10;
+}
+
+.overlay-image2 {
+    /* 3. KEY: Takes it out of the normal flow and allows precise placement */
+    position: absolute;
+    /* padding of the image(overlay)*/ 
+    padding-top: 6cm ;
+    padding-left: 2cm;
+padding-bottom: x;
+
+    /* 4. Positioning: Place the music note in the top-right corner */
+    top: 10px;    /* 10 pixels from the top edge of the container */
+    right: 10px;  /* 10 pixels from the right edge of the container */
+    
+    /* 5. Set the size of the overlay */
+    width: 50px; 
+    height: 100px;
+
+    z-index: 10;
+
+}
+        </style>
+    </head>
+    <body>
+        <div class="image-stack">
+            <img src="shkj.jpg" alt="Base background" class="base-image" height="748cm" width="1450cm">
+         
+            <img src="34fa36004be0340ec845ba6bbeb5e5d5.png" alt="object Overlay" class="overlay-image2" onclick="alert(jaimahesmati)">
+        
+            <img src="images (2).jpg" alt="player Overlay" class="overlay-image">
+        </div>
+        
+    </body>
+</html>
