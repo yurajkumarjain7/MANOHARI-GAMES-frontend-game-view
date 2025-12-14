@@ -4,6 +4,6 @@ we can adjust the player's image or object's image by using padding property
 
 steps to create a map:
 1: create many webpages as iframes 
-2: add background image and image for interactive object and player and adjust them with padding  as per requirement
+2: add background image and overlay image for interactive object and player and adjust them with padding  as per requirement
 3:create a index.html file with this open-source code 
 4: edit the values of the A,W,S as per the requirement by the  open-source code
